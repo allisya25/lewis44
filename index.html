@@ -1619,7 +1619,7 @@ async function saveFile(filename,data){
 /* ---- Excel (SheetJS, loaded on demand) ---- */
 let XLSXP=null;
 function loadXLSX(){ if(window.XLSX) return Promise.resolve(window.XLSX); if(XLSXP) return XLSXP;
-  XLSXP=new Promise((res,rej)=>{ const s=document.createElement('script'); s.src='vendor/xlsx.full.min.js'; s.onload=()=>res(window.XLSX); s.onerror=()=>{ XLSXP=null; rej(new Error('load')); }; document.head.appendChild(s); });
+  XLSXP=new Promise((res,rej)=>{ const s=document.createElement('script'); s.src='xlsx.full.min.js'; s.onload=()=>res(window.XLSX); s.onerror=()=>{ XLSXP=null; rej(new Error('load')); }; document.head.appendChild(s); });
   return XLSXP; }
 const XCOLS=[['ID','id'],['Title','title'],['Organising Department','dept'],['Start Date','start'],['End Date','end'],['Start Time','startTime'],['End Time','endTime'],['Venue','venue'],['Mode','mode'],['Category','category'],['Status','status'],['Programme','programme'],['Attendees','seats'],['Budget (RM)','budget'],['Actual Cost (RM)','actualCost'],['Description','description']];
 async function exportWorkshops(list, kind){
@@ -2042,7 +2042,7 @@ setInterval(()=>runAutoStatus(),10*60*1000);
 /* ---- Script loader (files shipped with this page) ---- */
 const SCRIPTS={};
 function loadScript(src){ if(SCRIPTS[src]) return SCRIPTS[src]; SCRIPTS[src]=new Promise((res,rej)=>{ const s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=()=>{ delete SCRIPTS[src]; rej(new Error('load '+src)); }; document.head.appendChild(s); }); return SCRIPTS[src]; }
-async function loadPDF(){ await loadScript('vendor/jspdf.umd.min.js'); await loadScript('vendor/jspdf.plugin.autotable.min.js'); return window.jspdf.jsPDF; }
+async function loadPDF(){ await loadScript('jspdf.umd.min.js'); await loadScript('jspdf.plugin.autotable.min.js'); return window.jspdf.jsPDF; }
 const pdfTxt = s => String(T(s)??'').replace(/[★✎●▲▼✓✕]/g,'').replace(/[^\x00-\xFF–—‘’“”•…]/g,'');
 async function imgData(src,maxW=1200){ try{ const i=await loadImg(src); const s=Math.min(1,maxW/i.width), c=document.createElement('canvas'); c.width=Math.round(i.width*s); c.height=Math.round(i.height*s); const x=c.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,c.width,c.height); x.drawImage(i,0,0,c.width,c.height); return {d:c.toDataURL('image/jpeg',.85),w:c.width,h:c.height}; }catch(e){ return null; } }
 function pdfHeader(doc,title,sub){
